@@ -1,7 +1,7 @@
 FROM nvcr.io/nvidia/cuda:12.1.1-cudnn8-devel-ubuntu20.04
 
 # Setup proxies if needed
-# ENV http_proxy 'http://internal-182-vpn-elb-1434222708.ap-northeast-1.elb.amazonaws.com:8080/'
+# ENV http_proxy 'hogehoge'
 # ENV http_proxy $http_proxy
 # ENV HTTP_PROXY $http_proxy
 # ENV https_proxy $http_proxy
