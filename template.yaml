@@ -1,0 +1,202 @@
+theme: default
+organization: OMRON SINIC X
+twitter: "@omron_sinicx"
+title: "Crystalformer: Infinitely Connected Attention for Periodic Structure Encoding"
+conference: ICLR 2024
+resources:
+  paper: https://openreview.net/forum?id=fxQiecl9HB
+  poster: ./iclr2024-poster-v3-afterconf.pdf
+  code: https://github.com/omron-sinicx/crystalformer
+  video: https://www.youtube.com/embed/hg6SOvXMl9Q?si=vIVU88nrJngoHeW2
+  blog: https://medium.com/sinicx/crystalformer-infinitely-connected-attention-for-periodic-structure-encoding-iclr-2024-78dfca12ffdd
+  demo: null
+  huggingface: null
+description: Propose a transformer for crystal property prediction by mimicking interatomic potential summations via self-attention.
+image: https://omron-sinicx.github.io/crystalformer/teaser_small.png
+url: https://omron-sinicx.github.io/crystalformer
+speakerdeck: null
+authors:
+  - name: Tatsunori Taniai
+    affiliation: [1]
+    url: http://taniai.space/
+    position: senior researcher
+  - name: Ryo Igarashi
+    affiliation: [1]
+    position: project researcher
+    url: https://scholar.google.com/citations?user=i06GU0EAAAAJ
+  - name: Yuta Suzuki
+    affiliation: [2]
+    position: researcher
+    url: https://suzuki.phd/
+  - name: Naoya Chiba
+    affiliation: [3]
+    position: assistant professor
+    url: https://sites.google.com/view/n-chiba-
+  - name: Kotaro Saito
+    affiliation: [4,5]
+    position: visiting researcher
+    url: https://sites.google.com/view/kotarosaito/
+  - name: Yoshitaka Ushiku
+    affiliation: [1]
+    position: principal investigator
+    url: https://yoshitakaushiku.net/
+  - name: Kanta Ono
+    affiliation: [5]
+    position: professor
+    url: https://scholar.google.com/citations?user=mJwzYNwAAAAJ
+contact_ids: ['github', 1] #=> 1st author
+affiliations:
+  - OMRON SINIC X Corporation
+  - Toyota Motor Corporation
+  - Tohoku University
+  - Randeft Inc.
+  - Osaka University
+meta:
+  - null
+bibtex: >
+  @inproceedings{taniai2024crystalformer,
+    title     = {Crystalformer: Infinitely Connected Attention for Periodic Structure Encoding},
+    author    = {Tatsunori Taniai and 
+                 Ryo Igarashi and 
+                 Yuta Suzuki and 
+                 Naoya Chiba and 
+                 Kotaro Saito and 
+                 Yoshitaka Ushiku and 
+                 Kanta Ono
+                 },
+    booktitle = {The Twelfth International Conference on Learning Representations (ICLR 2024)},
+    year      = {2024},
+    url       = {https://openreview.net/forum?id=fxQiecl9HB}
+  } 
+header:
+  bg_curve:
+    sinic_curve.png
+    #  bg_image: https://github.com/omron-sinicx/swarm-body/raw/main/images/teaser.jpg
+
+teaser: teaser.png
+
+overview: >
+  Predicting physical properties of materials from their crystal structures is a 
+  fundamental problem in materials science. In peripheral areas such as the prediction
+  of molecular properties, fully connected attention networks have been shown to
+  be successful. However, unlike these finite atom arrangements, crystal structures
+  are infinitely repeating, periodic arrangements of atoms, whose fully connected
+  attention results in infinitely connected attention. In this work, we show that this
+  infinitely connected attention can lead to a computationally tractable formulation,
+  interpreted as neural potential summation, that performs infinite interatomic potential 
+  summations in a deeply learned feature space. We then propose a simple
+  yet effective Transformer-based encoder architecture for crystal structures called
+  Crystalformer. Compared to an existing Transformer-based model, the proposed
+  model requires only 29.4% of the number of parameters, with minimal modifications to 
+  the original Transformer architecture. Despite the architectural simplicity,
+  the proposed method outperforms state-of-the-art methods for various property
+  regression tasks on the Materials Project and JARVIS-DFT datasets.
+
+body:
+  - title: null
+    text: |
+      ### From fully connected attention to “infinitely connected attention”
+
+      <img src="fca_mid.png" class="uk-align-center uk-responsive-width" alt="Fully connected attention" />
+      
+      We build our method upon the standard fully connected self-attention 
+      mechanism by Vaswani et al. (2017) with a few modifications.
+      Instead of the original abolute position representations, 
+      we employ relative position representations (φ and ψ) by Shaw et al. (2018).
+      This fully connected self-attention operation is directly applicable to structures of finite elements,
+      such as molecule structures.
+      
+      <img src="ica_mid.png" class="uk-align-center uk-responsive-width" alt="Infinitely connected attention" />
+
+      However, crystal structures are infinitely repeating, periodic arrangements of atoms,
+      which are typically represented by repeating unit cell structures.
+      Thus, extending the fully connected attention to crystal structures results in infinitely connected attention,
+      which involves an infinite summation to account for periodically translated unit cells in 3D space. (Note the figure is simplified to the case of 1D space.)
+
+      The infinitely connected attention describes that
+      the state of each atom i is influenced by the states of all the atoms in the structure, j(n),
+      with weights depending on their states and relative positions.
+
+      ### Interpreted as “neural potential summation”
+
+      <img src="nps_mid.png" class="uk-align-center uk-responsive-width" alt="Neural potential summation" />
+
+      In the physical world, such interatomic influences tend to decay as their distances increase.
+      We explicitly model such behaviors by introducing “distance decay attention”.
+      Specifically, we incorporate a Gaussian distance decay factor into attention weights
+      by means of relative position encoding.
+      Because of the similarity to energy calculation algorithms in physics simulation, 
+      we interpret our infinitely connected attention as “neural potential summation”
+      that performs interatomic potential summations deeply in abstract feature space.
+
+      ### Performed just like standard attention
+      
+      <img src="pfa_mid.png" class="uk-align-center uk-responsive-width" alt="Pseudo-finite periodic attention" />
+
+      By reformulating the infinitely connected attention, we can obtain a self-attention
+      formulation that seemingly resembles standard self-attention for finite elements.
+      In what we call pseudo-finite periodic attention, 
+      the periodicity information is embedded into new position encoding terms, $\alpha$ and $\beta$.
+
+  - title: Results
+    text: |
+      ### Material property prediction benchmarks
+
+      <img src="benchmark.png" class="uk-align-center uk-width-4-5@m" alt="Pseudo-finite periodic attention" />
+    
+      Our method consistently outperforms another Transformer variant, Matformer, and other state-of-the-art methods except for PotNet
+      in all the prediction tasks, while performing comptitively with PotNet.
+
+      ### Efficiency comparison
+
+      <img src="efficiency.png" class="uk-align-center uk-width-4-5@m" alt="Pseudo-finite periodic attention" />
+    
+      Our method is reasonably fast in both training and testing, while achieving the best model efficiency.
+
+      ### Ablation study and larger models
+      
+      <img src="simplified.png" class="uk-align-center uk-width-4-5@m" alt="Pseudo-finite periodic attention" />
+    
+      While position encoding $\phi$ for attention weights is important to make the inifinitely connected attention tractable,
+      position encoding $\psi$ for value vectors is another key to properly encoding periodic structures (See Sec 3.1 and Appendix D for more discussions).
+      When we evaluate a simplified model that uses no value-based position encoding $\psi$,
+      the performance drops significantly, as shown in Table 4.
+    
+      <img src="ablation.png" class="uk-align-center uk-width-4-5@m" alt="Pseudo-finite periodic attention" />
+    
+      We further evaluated performance variations when changing the number of self-attention blocks in Crystalformer,
+      by utilizing the simplified variant.
+      The results in Table A3 suggest that the performance increases steadily with more blocks, 
+      while moderately mounting on a plateau with four blocks.
+      
+      <img src="big_model.png" class="uk-align-center uk-width-5-6@m" alt="Pseudo-finite periodic attention" />
+    
+      We tested a larger model of totally 7 blocks.
+      The results in Tables A4 and A5 show that increasing the number of self-attention blocks can lead to
+      further improvements, given sufficient training data.
+
+      ### Fourier space attention for long-range interatomic interactions
+
+      <img src="fourier_attention.png" class="uk-align-center uk-width-4-5@m" alt="Pseudo-finite periodic attention" />
+    
+      One interesting extension of Crystalformer is to perform the infinitely connected attention in Fourier space
+      by using the principle of Ewald summation.
+      Fourier space is analogous to the frequency domain of
+      time-dependent functions, and appears in the 3D Fourier transform of spatial functions. When the 
+      periodic spatial encoding term 
+      is written as $\alpha_{ij} = \log f(p_j - p_i)$ with spatial function $f(r)$, f is a periodic function that can be
+      expressed in Fourier space via Fourier series. In Fourier space, $f$ 's infinite series of Gaussian
+      functions of distances in real space becomes an infinite series of Gaussian functions of spatial
+      frequencies. These two expressions are complementary
+      in that short-tail and long-tail potentials decay rapidly in real and Fourier space, respectively. We
+      use these two expressions for parallel heads of each multi-head attention layer, by computing their $\alpha$ and $\beta$ differently in
+      real or Fourier space.
+      As shown in Table A6, this variant using dual-space attention shows improvments depending on the target property for prediction.
+
+projects:
+  - title: 'Rethinking the role of frames for SE(3)-invariant crystal structure modeling'
+    journal: "ICLR 2025"
+    img: https://omron-sinicx.github.io/crystalframer/teaser_small.png
+    description: Extend Crystalformer by incorporating richer structural information beyond distances using dynamic frames.
+    url: https://omron-sinicx.github.io/crystalframer/
+
