@@ -6,6 +6,8 @@ In *The Twelfth International Conference on Learning Representations* (ICLR 2024
 
 [[Paper](https://openreview.net/forum?id=fxQiecl9HB)]  [[Project](https://omron-sinicx.github.io/crystalformer/)]
 
+**NEWS: A cleaned codebase with extended features is provided in our follow-up work, [CrystalFramer](https://github.com/omron-sinicx/crystalframer).**
+
 ## Citation
 ```text
 @inproceedings{taniai2024crystalformer,
@@ -36,12 +38,12 @@ In the docker container:
 ```bash
 cd /workspace/data
 python download_megnet_elastic.py
-python downlad_jarvis.py    # This step may take 1 hour and can be skipped for simple testing.
+python downlad_jarvis.py
 ```
 
 ## Testing
 Download pretrained weights: [[GoogleDrive](https://drive.google.com/file/d/1yEmwnWflYHGlwQia1xb3G91u2Edz8H2a/view?usp=sharing)]
-In the `/workspace' directory in the docker container:
+In the `/workspace` directory in the docker container:
 ```bash
 unzip weights.zip
 . demo.sh
@@ -50,7 +52,7 @@ Currently, pretrained models for MEGNET's bandgap and e_form with 4 or 7 attenti
 
 ## Training
 ### Single GPU Training
-In the `/workspace' directory in the docker container:
+In the `/workspace` directory in the docker container:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py -p latticeformer/default.json \
     --save_path result \
@@ -89,17 +91,17 @@ Currently, the throughput gain by multi-gpu training is limited. Suggest 2 or 4 
 
 ## Datasets and Targets
 
-|     target_set          |   targets           |   Unit    |   train   |   val |   test    |
-| ----------------------- | ------------------- | --------- | --------- | ----- | --------- |
-| jarvis__megnet          | e_form              | eV/atom   | 60000     | 5000  | 4239      |
-| jarvis__megnet          | bandgap             | eV        | 60000     | 5000  | 4239      |
-| jarvis__megnet-bulk     | bulk                | log(GPA)  | 4664      | 393   | 393       |
-| jarvis__megnet-shear    | shear               | log(GPA)  | 4664      | 392   | 393       |
-| dft_3d_2021             | formation_energy    | eV/atom   | 44578     | 5572  | 5572      |
-| dft_3d_2021             | total_energy        | eV/atom   | 44578     | 5572  | 5572      |
-| dft_3d_2021             | opt_bandgap         | eV        | 44578     | 5572  | 5572      |
-| dft_3d_2021-mbj_bandgap | mbj_bandgap         | eV        | 14537     | 1817  | 1817      |
-| dft_3d_2021-ehull       | ehull               | eV        | 44296     | 5537  | 5537      |
+|     target_set                  |   targets           |   Unit    |   train   |   val |   test    |
+| ------------------------------- | ------------------- | --------- | --------- | ----- | --------- |
+| jarvis__megnet                  | e_form              | eV/atom   | 60000     | 5000  | 4239      |
+| jarvis__megnet                  | bandgap             | eV        | 60000     | 5000  | 4239      |
+| jarvis__megnet-bulk             | bulk_modulus        | log(GPA)  | 4664      | 393   | 393       |
+| jarvis__megnet-shear            | shear_modulus       | log(GPA)  | 4664      | 392   | 393       |
+| jarvis__dft_3d_2021             | formation_energy    | eV/atom   | 44578     | 5572  | 5572      |
+| jarvis__dft_3d_2021             | total_energy        | eV/atom   | 44578     | 5572  | 5572      |
+| jarvis__dft_3d_2021             | opt_bandgap         | eV        | 44578     | 5572  | 5572      |
+| jarvis__dft_3d_2021-mbj_bandgap | mbj_bandgap         | eV        | 14537     | 1817  | 1817      |
+| jarvis__dft_3d_2021-ehull       | ehull               | eV        | 44296     | 5537  | 5537      |
 
 Use the following hyperparameters:
 - For the `jarvis__megnet` datasets: `--n_epochs 500 --batch_size 128`
